@@ -15,3 +15,5 @@ ENV/
 .vscode/
 *.swp
 *.swo
+
+chroma_db/

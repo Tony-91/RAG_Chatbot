@@ -11,6 +11,10 @@ A Retrieval-Augmented Generation (RAG) chatbot that answers questions about the 
 - Interactive command-line chat interface
 - Source citation for all answers
 
+## Sample Document
+
+The project includes a PDF of the Declaration of Independence. You can [download it here](https://www.archives.gov/founding-docs/declaration-transcript) from the U.S. National Archives.
+
 ## Prerequisites
 
 - Python 3.8+
