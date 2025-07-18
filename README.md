@@ -2,6 +2,35 @@
 
 A Retrieval-Augmented Generation (RAG) chatbot that answers questions about the Declaration of Independence by analyzing its content. The application uses LangChain, OpenAI embeddings, and ChromaDB for vector storage.
 
+## How It Works
+
+### 1. Pre-processing (Done Once):
+
+- The PDF is split into chunks (1000 characters each with 200-character overlap)
+- Each chunk is converted to a vector (embedding) and stored in ChromaDB
+
+### 2. When You Ask a Question:
+
+- Your question is converted to a vector using the same embedding model
+- The system performs a vector similarity search to find the most relevant pre-processed chunks
+- It doesn't scan the PDF in real-time; it searches through the pre-computed vectors
+
+### 3. Efficiency:
+
+- This is much faster than scanning the PDF each time
+- The vector search finds semantically similar content, not just keyword matches
+- The `k=3` parameter means it returns the top 3 most relevant chunks
+
+### Summary:
+
+1. Pre-process the PDF into searchable vectors (done once)
+2. When you ask a question, find the most similar vectors to your question
+3. Use those chunks to generate an answer
+
+**Note:** The first run takes longer (processing the PDF) but subsequent questions are fast (just searching vectors).
+
+---
+
 ## Features
 
 - PDF document ingestion and processing
@@ -24,23 +53,27 @@ The project includes a PDF of the Declaration of Independence. You can [download
 ## Installation
 
 1. Clone the repository:
+
    ```bash
    git clone <repository-url>
    cd RAG_Chatbot
    ```
 
 2. Create and activate a virtual environment:
+
    ```bash
    python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
 3. Install dependencies:
+
    ```bash
    pip install -r requirements.txt
    ```
-   
+
    Or install them manually:
+
    ```bash
    pip install langchain langchain-community langchain-openai chromadb pypdf python-dotenv
    ```
@@ -90,8 +123,8 @@ embeddings = OpenAIEmbeddings()
 
 # Create and store vectors
 db = Chroma.from_documents(
-    docs, 
-    embeddings, 
+    docs,
+    embeddings,
     persist_directory="./chroma_db"
 )
 ```
@@ -119,7 +152,7 @@ qa = RetrievalQA.from_chain_type(
 ```python
 def run_chatbot(qa_chain):
     print("📜 Declaration of Independence RAG Chatbot ready. Ask anything about the PDF (type 'exit' to quit).")
-    
+
     while True:
         query = input("You: ")
         if query.lower() == "exit":
@@ -128,7 +161,7 @@ def run_chatbot(qa_chain):
         result = qa_chain.invoke({"query": query})
         answer = result["result"]
         sources = result["source_documents"]
-        
+
         print(f"\n🤖 Answer: {answer}\n")
         print("📄 Sources:")
         for src in sources:
