@@ -11,6 +11,14 @@ def run_chatbot(qa_chain):
         sources = result["source_documents"]
 
         print(f"\n🤖 Answer: {answer}\n")
+        
+        # Display the top relevant chunks
+        print("🔍 Top Relevant Chunks:")
+        for i, doc in enumerate(sources[:3], 1):
+            chunk_text = doc.page_content[:200] + "..." if len(doc.page_content) > 200 else doc.page_content
+            print(f"\n📝 Chunk {i} (Score: {doc.metadata.get('relevance_score', 'N/A'):.4f}):")
+            print(f"   {chunk_text.replace('\n', ' ').strip()}")
+        
         # Use a set to get unique sources
         unique_sources = set()
         for src in sources:
@@ -19,7 +27,7 @@ def run_chatbot(qa_chain):
                 unique_sources.add(source)
                 
         if unique_sources:
-            print("📄 Sources:")
+            print("\n📄 Sources:")
             for source in sorted(unique_sources):
                 print(f"- {source}")
         print("\n" + "="*50 + "\n")
